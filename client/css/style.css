@@ -5,6 +5,7 @@
 
 body {
     background: var(--bg);
+    color: var(--br);
 }
 
 canvas {
