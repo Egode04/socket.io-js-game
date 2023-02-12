@@ -4,7 +4,7 @@ function calcTiles(tiles) {
 }
 
 function addHitbox(info, array) {
-    const opacity = 0.15
+    const opacity = 0
     info.forEach((hitbox) => {
         color = `rgba(25, 200, 255, ${opacity})`
         if (hitbox.type === 'death') color = `rgba(255, 25, 100, ${opacity})`
@@ -23,6 +23,10 @@ function addHitbox(info, array) {
             })
         )
     })
+}
+
+function getSpeed(speed) {
+    return speed / Math.sqrt(2)
 }
 
 function init() {
@@ -528,6 +532,38 @@ function init() {
     //  hitboxes
     addHitbox(hitbox, hitboxes)
 
+    // Player
+    playerImg = new Img({
+        dimensions: {
+            width: calcTiles(1),
+            height: calcTiles(2)
+        },
+        position: {
+            x: calcTiles(11),
+            y: calcTiles(11)
+        },
+        src: playerState.down
+    })
+
+    player = new Player({
+        dimensions: {
+            width: calcTiles(1),
+            height: calcTiles(2)
+        },
+        position: {
+            x: calcTiles(11),
+            y: calcTiles(8)
+        },
+        velocity: {
+            x: 0,
+            y: 0
+        },
+        physics: {
+            speed: 2
+        },
+        color: `rgba(0, 255, 0, ${hitboxes[0].opacity})`
+    })
+
     animate()
 }
 
@@ -535,6 +571,11 @@ function animate() {
     requestAnimationFrame(animate)
 
     background.draw()
+
+    playerImg.position = player.position
+    playerImg.draw()
+
+    player.update()
     
     structures.forEach(structure => {
         structure.draw()
