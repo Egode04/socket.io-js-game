@@ -9,7 +9,8 @@ app.use(express.static(`${__dirname}/../client`))
 const server = http.createServer(app)
 const io = socket(server)
 
-io.on('connection', socket => {
+io.on('connect', socket => {
+    // user connected
     console.log(`New client connected: ${socket.id}`)
 
     // emit commands here

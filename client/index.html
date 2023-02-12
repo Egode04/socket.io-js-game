@@ -4,13 +4,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/client/css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>socket io game</title>
+    <style>
+        :root {
+            --bg: #231f20;
+            --br: #c2c2c2;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--br);
+        }
+
+        canvas {
+            border: 0px solid var(--br);
+        }
+    </style>
 </head>
 <body>
-    GAME
+    <game class="flex content-center items-center absolute" style="left: calc(50vw - 768px / 2); height: 100vh;">
+        <canvas id="game"></canvas>
+    </game>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="src/client.js"></script>
+    <script src="src/game.js"></script>
 </body>
 </html>
