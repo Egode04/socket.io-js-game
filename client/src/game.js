@@ -79,9 +79,9 @@ function calcTiles(tiles) {
 }
 
 function addHitbox(info, array) {
-    const opacity = 0.2
+    const opacity = 0.15
     info.forEach((hitbox) => {
-        color = `rgba(25, 25, 255, ${opacity})`
+        color = `rgba(25, 200, 255, ${opacity})`
         if (hitbox.type === 'death') color = `rgba(255, 25, 100, ${opacity})`
         
         array.push(
@@ -404,7 +404,7 @@ function init() {
         src: './img/wall.png'
     }))
 
-    //  grave stones with cross
+    //  grave stones
     const info = [
         './img/grave cross.png',    // 0
         './img/grave cross.png',    // 1
