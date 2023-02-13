@@ -1,40 +1,38 @@
 addEventListener('keydown', (event) => {
     switch (event.key.toLowerCase()) {
         case 'w':
-            keysPressed.w = true
+            keysPressed.up = true
             break
         case 'a':
-            keysPressed.a = true
+            keysPressed.left = true
             break
         case 's':
-            keysPressed.s = true
+            keysPressed.down = true
             break
         case 'd':
-            keysPressed.d = true
+            keysPressed.right = true
             break
     }
     socket.emit('pressed', keysPressed)
     socket.emit('movement', player)
 })
 
-// addEventListener('keypress', interval = setInterval(socket.emit('movement', player), 1000/30))
 
 addEventListener('keyup', (event) => {
     switch (event.key.toLowerCase()) {
         case 'w':
-            keysPressed.w = false
+            keysPressed.up = false
             break
         case 'a':
-            keysPressed.a = false
+            keysPressed.left = false
             break
         case 's':
-            keysPressed.s = false
+            keysPressed.down = false
             break
         case 'd':
-            keysPressed.d = false
+            keysPressed.right = false
             break
     }
     socket.emit('pressed', keysPressed)
     socket.emit('movement', player)
-    // clearInterval(interval)
 })

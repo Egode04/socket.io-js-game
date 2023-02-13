@@ -570,15 +570,25 @@ function init() {
 function animate() {
     requestAnimationFrame(animate)
 
-    background.draw()
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    playerImg.position = player.position
-    playerImg.draw()
+    // background.draw()
 
-    player.update()
+    const backgroundImage = new Image()
+    backgroundImage.src = './map/arena.png'
+    ctx.drawImage(backgroundImage, 0, 0)
+
+    players.forEach(player => {
+        ctx.drawImage(playerImage, player.position.x, player.position.y)
+    })
+
+    // player.update()
     
     structures.forEach(structure => {
-        structure.draw()
+        const structureImage = new Image()
+        structureImage.src = structure.src
+        ctx.drawImage(structureImage, structure.position.x, structure.position.y)
+        // structure.draw()
     })
 
     hitboxes.forEach(hitbox => {

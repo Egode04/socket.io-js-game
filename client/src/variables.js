@@ -6,6 +6,8 @@ canvas.width = canvas.height
 
 const hitboxes = []
 const structures = []
+const playerImages = []
+let players = []
 
 let background
 let playerImg
@@ -19,8 +21,11 @@ const playerState = {
 }
 
 const keysPressed = {
-    'w': false,
-    'a': false,
-    's': false,
-    'd': false
+    up: false,
+    left: false,
+    down: false,
+    right: false
 }
+
+const playerImage = new Image()
+playerImage.src = playerState.down
