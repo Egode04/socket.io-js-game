@@ -71,7 +71,7 @@ class Player {
     constructor({
         dimensions,
         position,
-        velocity = {x: 0, y: 0},
+        velocity,
         physics,
         color
     }) {
