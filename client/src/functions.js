@@ -4,7 +4,7 @@ function calcTiles(tiles) {
 }
 
 function addHitbox(info, array) {
-    const opacity = 0
+    const opacity = 0.2
     info.forEach((hitbox) => {
         color = `rgba(25, 200, 255, ${opacity})`
         if (hitbox.type === 'death') color = `rgba(255, 25, 100, ${opacity})`
@@ -292,6 +292,8 @@ function init() {
         }
     }
 
+    socket.emit('hitboxes', hitbox)
+
     // Background
     background = new Img({
         dimensions: {
@@ -572,23 +574,24 @@ function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // background.draw()
-
     const backgroundImage = new Image()
     backgroundImage.src = './map/arena.png'
     ctx.drawImage(backgroundImage, 0, 0)
 
     players.forEach(player => {
-        ctx.drawImage(playerImage, player.position.x, player.position.y)
+        ctx.drawImage(playerImage, player.position.x-calcTiles(0.19), player.position.y-calcTiles(0.44))
+    })
+    
+    bowls.forEach(bowl => {
+        ctx.drawImage(bowlImage, bowl.position.x-bowl.dimensions.width/2, bowl.position.y-bowl.dimensions.height/2, bowl.dimensions.width, bowl.dimensions.height)
     })
 
-    // player.update()
+    // console.log(bowls)
     
     structures.forEach(structure => {
         const structureImage = new Image()
         structureImage.src = structure.src
         ctx.drawImage(structureImage, structure.position.x, structure.position.y)
-        // structure.draw()
     })
 
     hitboxes.forEach(hitbox => {

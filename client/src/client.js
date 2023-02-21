@@ -8,4 +8,8 @@ socket.on('connect', () => {
     socket.on('players', serverPlayers => {
         players = serverPlayers
     })
+
+    socket.on('bowls', serverBowls => {
+        bowls = serverBowls
+    })
 })

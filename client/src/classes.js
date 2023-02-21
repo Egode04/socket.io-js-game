@@ -3,7 +3,7 @@ class Hitbox {
     constructor({
         dimensions,
         position,
-        velocity,
+        velocity = { x: 0, y: 0 },
         physics,
         color
     }) {
