@@ -12,4 +12,8 @@ socket.on('connect', () => {
     socket.on('bowls', serverBowls => {
         bowls = serverBowls
     })
+
+    socket.on('ramen', serverRamen => {
+        ramen = serverRamen
+    })
 })

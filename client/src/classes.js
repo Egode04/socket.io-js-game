@@ -96,3 +96,29 @@ class Player {
         this.draw()
     }
 }
+
+class Text {
+    constructor({
+        position,
+        string,
+        align,
+        color,
+        type,
+        size,
+        font = 'VT323',
+    }) {
+        this.position = position
+        this.string = string
+        this.align = align
+        this.color = color
+        this.type = type
+        this.size = size
+        this.font = font
+    }
+
+    draw() {
+        ctx.font = `${this.size} ${this.font}`
+        ctx.textAlign = this.align
+        ctx.fillText(this.string, this.position.x, this.position.y)
+    }
+}

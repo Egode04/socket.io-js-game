@@ -534,42 +534,25 @@ function init() {
     //  hitboxes
     addHitbox(hitbox, hitboxes)
 
-    // Player
-    playerImg = new Img({
-        dimensions: {
-            width: calcTiles(1),
-            height: calcTiles(2)
-        },
+    // add text
+    text.push({
         position: {
-            x: calcTiles(11),
-            y: calcTiles(11)
+            x: -50,
+            y: -50
         },
-        src: playerState.down
+        string: '3',
+        align: 'center',
+        color: '#000',
+        size: calcTiles(0.5),
+
     })
 
-    player = new Player({
-        dimensions: {
-            width: calcTiles(1),
-            height: calcTiles(2)
-        },
-        position: {
-            x: calcTiles(11),
-            y: calcTiles(8)
-        },
-        velocity: {
-            x: 0,
-            y: 0
-        },
-        physics: {
-            speed: 2
-        },
-        color: `rgba(0, 255, 0, ${hitboxes[0].opacity})`
-    })
-
+    // animate
     animate()
 }
 
 function animate() {
+    // if logged in => start game || let gameInProgress = true
     requestAnimationFrame(animate)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -578,10 +561,44 @@ function animate() {
     backgroundImage.src = './map/arena.png'
     ctx.drawImage(backgroundImage, 0, 0)
 
+    ramen.forEach(ramen => {
+        ctx.drawImage(ramenImage, ramen.position.x, ramen.position.y, ramen.dimensions.width, ramen.dimensions.height)
+    })
+
     players.forEach(player => {
         ctx.drawImage(playerImage, player.position.x-calcTiles(0.19), player.position.y-calcTiles(0.44))
+
+        let colors = {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0
+        }
+
+        if (player.hp.armor) {
+            colors = {
+                r: 50,
+                g: 100,
+                b: 255,
+                a: 0.1
+            }
+        }
+        if (player.hp.health === 1) {
+            colors = {
+                r: 255,
+                g: 100,
+                b: 50,
+                a: 0.1
+            }
+        }
+
+        ctx.fillStyle = `rgba(${colors.r}, ${colors.g}, ${colors.b}, ${colors.a})`
+        ctx.fillRect(player.position.x, player.position.y, player.dimensions.width, player.dimensions.height)
     })
-    
+
+    // change color of player when losing or gaining health
+    // ctx.fillRect()
+
     bowls.forEach(bowl => {
         ctx.drawImage(bowlImage, bowl.position.x-bowl.dimensions.width/2, bowl.position.y-bowl.dimensions.height/2, bowl.dimensions.width, bowl.dimensions.height)
     })
@@ -596,5 +613,17 @@ function animate() {
 
     hitboxes.forEach(hitbox => {
         hitbox.update()
+    })
+
+    // draw text
+    players.forEach(player => {
+        text.forEach(text => {
+            ctx.fillStyle = text.color
+            ctx.font = `${text.size}px serif`
+            ctx.textAlign = text.align
+            ctx.fillText(player.hp.health, player.position.x+player.dimensions.width/2, player.position.y+player.dimensions.height/1.05)
+            ctx.fillStyle = '#fff'
+            ctx.strokeText(player.hp.health)
+        })
     })
 } init()

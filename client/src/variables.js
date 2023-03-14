@@ -7,9 +7,11 @@ canvas.width = canvas.height
 const hitboxes = []
 const structures = []
 const playerImages = []
+const text = []
 
 let players = []
 let bowls = []
+let ramen = []
 
 let background
 let playerImg
@@ -34,3 +36,6 @@ playerImage.src = playerState.down
 
 const bowlImage = new Image()
 bowlImage.src = './food/bowl.png'
+
+const ramenImage = new Image()
+ramenImage.src = './food/ramen.png'

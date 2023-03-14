@@ -1,6 +1,7 @@
 const http = require('http')
 const express = require('express')
 const socket = require('socket.io')
+const { off } = require('process')
 
 const app = express()
 
@@ -21,10 +22,13 @@ const inputMap = {}
 
 let hitboxes = []
 const bowls = []
+const ramen = []
 
 const physics = {
     speed: 8
 }
+
+let removeIndexes = []
 
 function tick() {
     players.forEach(player => {
@@ -94,9 +98,15 @@ function tick() {
         } else {
             player.velocity.y = -player.velocity.y
         }
+
+        // set movement speed
+        player.physics.speed = setSpeed({
+            maxSpeed: 6,
+            bowls: player.bowls,
+            maxBowls: player.maxBowls
+        })
     })
 
-    const removeIndexes = []
     bowls.forEach((bowl, index) => {
         bowl.position.x += bowl.velocity.x
         bowl.position.y += bowl.velocity.y
@@ -114,12 +124,104 @@ function tick() {
         })
     })
 
-    removeIndexes.forEach(index => {
-        bowls.splice(index, 1)
+    removeIndexes = removeIndex(removeIndexes, bowls)
+
+    players.forEach((player) => {
+        bowls.forEach((bowl, index) => {
+            if (player.id !== bowl.parent.id) {
+                if (collition(player, bowl)) {
+                    removeIndexes.push(index)
+                    
+                    if (player.hp.armor) {
+                        player.hp.armor -= 1
+                    } else if (player.hp.health) {
+                        player.hp.health -= 1
+                    } if (!player.hp.health) {
+                        resetPlayer(player)
+                    }
+                }
+            }
+        })
+    })
+
+    removeIndexes = removeIndex(removeIndexes, bowls)
+
+    players.forEach(player => {
+        ramen.forEach((ramen, index) => {
+            if (player.bowls < player.maxBowls) {
+                if (collition(player, ramen)) {
+                    removeIndexes.push(index)
+                    
+                    player.bowls += ramen.effect.bowls
+                    player.hp.health += ramen.effect.healing
+                    if (player.hp.health > player.hp.maxHealth) {
+                        player.hp.health = player.hp.maxHealth
+                    }
+                }
+            }
+        })
+    })
+
+    removeIndexes = removeIndex(removeIndexes, ramen)
+
+    // move ramen if inside of hitbox
+    ramen.forEach(ramen => {
+        hitboxes.forEach(hitbox => {
+            if (collition(ramen, hitbox)) {
+                ramen.position = newPosition({
+                    x: {
+                        range: 20,
+                        offset: 2
+                    },
+                    y: {
+                        range: 18,
+                        offset: 2
+                    }
+                })
+            }
+        })
     })
 
     io.emit('players', players)
     io.emit('bowls', bowls)
+    io.emit('ramen', ramen)
+}
+
+function setSpeed({maxSpeed, bowls, maxBowls, speed = 4}) {
+    return speed + (maxSpeed-speed) * (maxBowls-bowls)/maxBowls
+}
+
+function removeIndex(indexes, array) {
+    indexes.forEach(index => {
+        array.splice(index, 1)
+    })
+    return []
+}
+
+function resetPlayer(player) {
+    const hp = {
+        health: 3,
+        armor: 1
+    }
+    player.hp = hp
+    player.bowls = player.maxBowls
+    player.position = newPosition({
+        x: {
+            range: 9,
+            offset: 7
+        },
+        y: {
+            range: 7,
+            offset: 2
+        }
+    })
+}
+
+function newPosition(obj) {
+    return {
+        x: calcTiles(Math.floor(Math.random() * (obj.x.range-obj.x.offset) + obj.x.offset)),
+        y: calcTiles(Math.floor(Math.random() * (obj.x.range-obj.x.offset) + obj.x.offset))
+    }
 }
 
 function getSpeed(speed) {
@@ -129,6 +231,10 @@ function getSpeed(speed) {
 function calcTiles(tiles) {
     const tileSize = 32
     return tiles * tileSize
+}
+
+function randInt(range, offset) {
+    return Math.floor(Math.random() * (range - offset) + offset)
 }
 
 function collition(object, hitbox) {
@@ -154,10 +260,16 @@ io.on('connect', socket => {
     }
     players.push({
         id: socket.id,
-        position: {
-            x: calcTiles(0.19),
-            y: calcTiles(0.44)
-        },
+        position: newPosition({
+            x: {
+                range: 9,
+                offset: 7
+            },
+            y: {
+                range: 7,
+                offset: 2
+            }
+        }),
         velocity: {
             x: 0,
             y: 0
@@ -168,7 +280,14 @@ io.on('connect', socket => {
         },
         physics: {
             speed: 4
-        }
+        },
+        hp: {
+            health: 3,
+            armor: 1,
+            maxHealth: 3
+        },
+        bowls: 3,
+        maxBowls: 3
     })
 
     // emit commands here
@@ -189,20 +308,55 @@ io.on('connect', socket => {
                 p = player
             }
         })
-        bowls.push({
-            position: {
-                x: p.position.x + p.dimensions.width / 2,
-                y: p.position.y + p.dimensions.height / 2
-            },
-            dimensions: {
-                width: calcTiles(0.75),
-                height: calcTiles(0.75)
-            },
-            velocity: {
-                x: Math.cos(angle) * physics.speed,
-                y: Math.sin(angle) * physics.speed
-            }
-        })
+
+        if (p.bowls) {
+            // shoot bowls
+            bowls.push({
+                position: {
+                    x: p.position.x + p.dimensions.width / 2,
+                    y: p.position.y + p.dimensions.height / 2
+                },
+                dimensions: {
+                    width: calcTiles(0.75),
+                    height: calcTiles(0.75)
+                },
+                velocity: {
+                    x: Math.cos(angle) * physics.speed,
+                    y: Math.sin(angle) * physics.speed
+                },
+                parent: p
+            })
+
+            // spawn ramen
+            const ramenSize = randInt(2, 0)
+            ramen.push({
+                position: newPosition({
+                    x: {
+                        range: 20,
+                        offset: 2
+                    },
+                    y: {
+                        range: 18,
+                        offset: 2
+                    }
+                }),
+                dimensions: {
+                    width: calcTiles(1 + 0.25 * ramenSize),
+                    height: calcTiles(1 + 0.25 * ramenSize)
+                },
+                velocity: {
+                    x: 0,
+                    y: 0
+                },
+                effect: {
+                    healing: ramenSize,
+                    bowls: 1
+                }
+            })
+            
+            // remove 1 bowl from statch
+            p.bowls -= 1
+        }
     })
 
     socket.on('disconnect', () => {
