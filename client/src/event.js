@@ -38,20 +38,22 @@ addEventListener('keyup', (event) => {
 })
 
 addEventListener('click', event => {
-    let p
-    players.forEach(player => {
-        if (player.id === socket.id) {
-            p = player
+    if (players.length) {
+        let p
+        players.forEach(player => {
+            if (player.id === socket.id) {
+                p = player
+            }
+        })
+        const unusedSpace = {
+            x: innerWidth/2 - canvas.width,
+            y: innerHeight/2 - canvas.height
         }
-    })
-    const unusedSpace = {
-        x: innerWidth/2 - canvas.width,
-        y: innerHeight/2 - canvas.height
+        // console.log(p)
+        const angle = Math.atan2(
+            event.clientY - p.position.y - p.dimensions.height / 2,
+            event.clientX - p.position.x - p.dimensions.width / 2
+        )
+        socket.emit('bowl', angle)
     }
-    // console.log(p)
-    const angle = Math.atan2(
-        event.clientY - p.position.y - p.dimensions.height / 2,
-        event.clientX - p.position.x - p.dimensions.width / 2
-    )
-    socket.emit('bowl', angle)
 })

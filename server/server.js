@@ -1,7 +1,6 @@
 const http = require('http')
 const express = require('express')
 const socket = require('socket.io')
-const { off } = require('process')
 
 const app = express()
 
@@ -10,6 +9,35 @@ app.use(express.static(`${__dirname}/../client`))
 const server = http.createServer(app)
 const io = socket(server)
 
+// mySql
+const SQL = {
+    mysql: require('mysql'),
+    await: require('mysql-await')
+}
+
+// connection
+const conn = {
+    host     : 'localhost',
+    user     : 'root',
+    password : 'password',
+    database : 'node_mysql'
+}
+
+// create connection
+const data = {
+    db: SQL.mysql.createConnection(conn),
+    await: SQL.await.createConnection(conn)
+}
+
+// connect
+data.db.connect(err => {
+    if (err) throw err
+})
+data.await.connect(err => {
+    if (err) throw err
+})
+
+// variables
 const TICK_RATE = 30
 
 const canvas = {
@@ -29,6 +57,8 @@ const physics = {
 }
 
 let removeIndexes = []
+
+let once = true
 
 function tick() {
     players.forEach(player => {
@@ -248,46 +278,56 @@ function collition(object, hitbox) {
     }
 }
 
+function checkUser(user, users) {
+    for (let obj of users) {
+        if (obj.username === user.username && obj.password === user.password) {
+            return true
+        } return false
+    }
+}
+
 io.on('connect', socket => {
     // user connected
     console.log(`New client connected: ${socket.id}`)
 
-    inputMap[socket.id] = {
-        up:    false,
-        down:  false,
-        left:  false,
-        right: false
-    }
-    players.push({
-        id: socket.id,
-        position: newPosition({
-            x: {
-                range: 9,
-                offset: 7
+    socket.on('logged in', () => {
+        inputMap[socket.id] = {
+            up:    false,
+            down:  false,
+            left:  false,
+            right: false
+        }
+        players.push({
+            id: socket.id,
+            position: newPosition({
+                x: {
+                    range: 9,
+                    offset: 7
+                },
+                y: {
+                    range: 7,
+                    offset: 2
+                }
+            }),
+            velocity: {
+                x: 0,
+                y: 0
             },
-            y: {
-                range: 7,
-                offset: 2
-            }
-        }),
-        velocity: {
-            x: 0,
-            y: 0
-        },
-        dimensions: {
-            width: calcTiles(0.66),
-            height: calcTiles(1.38)
-        },
-        physics: {
-            speed: 4
-        },
-        hp: {
-            health: 3,
-            armor: 1,
-            maxHealth: 3
-        },
-        bowls: 3,
-        maxBowls: 3
+            dimensions: {
+                width: calcTiles(0.66),
+                height: calcTiles(1.38)
+            },
+            physics: {
+                speed: 4
+            },
+            hp: {
+                health: 3,
+                armor: 1,
+                maxHealth: 3
+            },
+            bowls: 3,
+            maxBowls: 3
+        })
     })
 
     // emit commands here
@@ -357,6 +397,11 @@ io.on('connect', socket => {
             // remove 1 bowl from statch
             p.bowls -= 1
         }
+    })
+
+    socket.on('login', user => {
+        console.log('login attempted...')
+        socket.emit('logged in')
     })
 
     socket.on('disconnect', () => {

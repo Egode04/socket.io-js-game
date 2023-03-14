@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <title>socket io game</title>
     <style>
         :root {
@@ -20,19 +22,101 @@
         canvas {
             border: 0px solid var(--br);
         }
+
+        #game {
+            display: none;
+        }
+
+        .wrapper {
+            width: 50rem;
+            height: 30rem;
+            margin-left: calc(50vw - 25rem);
+            margin-top: 5rem;
+            padding: 5rem;
+            background: white;
+            border-radius: 5rem;
+            border: 1px solid black;
+            transition: 200ms all;
+        }
+        .wrapper .title {
+            margin: 0;
+            padding: 0;
+            font-family: arial;
+            font-size: 3rem;
+        }
     </style>
 </head>
 <body>
+    <account>
+        <div class="login wrapper" class="row">
+            <h1 class="title">Login</h1>
+            <form class="col s12" method="post">
+    
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="username" type="text" class="validate" name="Username">
+                        <label id="user" for="username">Username</label>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="password" type="password" class="validate" name="Password">
+                        <label id="pass" for="password">Password</label>
+                    </div>
+                </div>
+    
+                <a id="login" class="waves-effect waves-light btn">
+                    Login
+                </a>
+    
+            </form>
+        </div>
+    
+        <div class="signup wrapper" class="row">
+            <h2 class="title">Sign Up</h2>
+            <form class="col s12" method="post">
+    
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input class="username" type="text" class="validate" name="Username">
+                        <label class="user" for="username">Username</label>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input class="password" type="password" class="validate" name="Password">
+                        <label class="pass" for="password">Password</label>
+                    </div>
+                </div>
+    
+                <a id="signup" class="waves-effect waves-light btn">
+                    Sign Up
+                </a>
+    
+            </form>
+        </div>
+    </account>
+
     <game class="flex content-center items-center absolute" style="left: calc(50vw - 768px / 2); height: 100vh;">
         <canvas id="game"></canvas>
     </game>
 
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script src="/socket.io/socket.io.js"></script>
+
+    <script src="src/login.js"></script>
+    <script src="src/signup.js"></script>
+
     <script src="src/variables.js"></script>
-    <script src="src/client.js"></script>
     <script src="src/classes.js"></script>
     <script src="src/functions.js"></script>
+    
+    <script src="src/client.js"></script>
     <script src="src/event.js"></script>
 </body>
 </html>

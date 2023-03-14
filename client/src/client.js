@@ -16,4 +16,9 @@ socket.on('connect', () => {
     socket.on('ramen', serverRamen => {
         ramen = serverRamen
     })
+
+    socket.on('logged in', () => {
+        init()
+        socket.emit('logged in')
+    })
 })

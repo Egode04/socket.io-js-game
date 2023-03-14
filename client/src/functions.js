@@ -4,7 +4,7 @@ function calcTiles(tiles) {
 }
 
 function addHitbox(info, array) {
-    const opacity = 0.2
+    const opacity = 0
     info.forEach((hitbox) => {
         color = `rgba(25, 200, 255, ${opacity})`
         if (hitbox.type === 'death') color = `rgba(255, 25, 100, ${opacity})`
@@ -30,6 +30,10 @@ function getSpeed(speed) {
 }
 
 function init() {
+    // setup game
+    wrapper.style.display = 'none'
+    canvas.style.display = 'block'
+
     // hitboxes
     const hitbox = [
         {
@@ -622,8 +626,8 @@ function animate() {
             ctx.font = `${text.size}px serif`
             ctx.textAlign = text.align
             ctx.fillText(player.hp.health, player.position.x+player.dimensions.width/2, player.position.y+player.dimensions.height/1.05)
-            ctx.fillStyle = '#fff'
-            ctx.strokeText(player.hp.health)
+            // ctx.fillStyle = '#fff'
+            // ctx.strokeText(player.hp.health)
         })
     })
-} init()
+}
