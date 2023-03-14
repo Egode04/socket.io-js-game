@@ -60,6 +60,71 @@ let removeIndexes = []
 
 let once = true
 
+// functions
+async function insertUser(user) {
+    if (user.username && user.password) {
+        const users = await selectUsers()
+        for (let obj of users) {
+            if (obj.username === user.username) {
+                console.log('username taken...')
+                return false
+            }
+        }
+        let sql = `INSERT INTO users SET ?`
+        data.db.query(sql, user, err => {
+            if (err) throw err
+            console.log('succeded...')
+            return true
+        })
+    } else {
+        console.log('empty input(s)...')
+        return false
+    }
+}
+
+async function selectUsers() {
+    let array = []
+    let sql = `SELECT * FROM users`
+
+    try {
+        let results = await data.await.awaitQuery(sql)
+
+        for (i of results) {
+            res = results[results.indexOf(i)]
+            array.push({ id: res.id, username: res.username, password: res.password })
+        }
+        
+        return array
+    } catch (error) {
+        throw error
+    }
+}
+
+async function signup(user) {
+    if (user.username && user.password) {
+        const users = await selectUsers()
+        for (let obj of users) {
+            if (obj.username === user.username) {
+                return false
+            }
+        } return true
+    } return
+}
+
+async function login(user) {
+    if (user.username && user.password) {
+        const users = await selectUsers()
+        console.log(users)
+        for (let obj of users) {
+            if (obj.username === user.username && obj.password === user.password) {
+                console.log(obj)
+                console.log(user)
+                return true
+            }
+        } return true
+    } return
+}
+
 function tick() {
     players.forEach(player => {
         const inputs = inputMap[player.id]
@@ -400,8 +465,26 @@ io.on('connect', socket => {
     })
 
     socket.on('login', user => {
-        console.log('login attempted...')
-        socket.emit('logged in')
+        // console.log('login attempted...')
+        if (login(user) === true) {
+            console.log('success...')
+            // socket.emit('logged in')
+        } else {
+            console.log('failed...')
+            socket.emit('loggin failed')
+        }
+    })
+
+    socket.on('signup', user => {
+        // console.log('sign up attempted...')
+        if (signup(user)) {
+            insertUser(user)
+            // console.log('sign up succeded...')
+            socket.emit('signup succeded')
+        } else {
+            // console.log('sign up failed...')
+            socket.emit('signup failed')
+        }
     })
 
     socket.on('disconnect', () => {

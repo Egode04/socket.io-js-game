@@ -21,4 +21,15 @@ socket.on('connect', () => {
         init()
         socket.emit('logged in')
     })
+
+    socket.on('signup succeded', () => {
+        succeded(sign)
+    })
+
+    socket.on('signup failed', () => {
+        failed(sign)
+    })
+    socket.on('login failed', () => {
+        failed(form)
+    })
 })

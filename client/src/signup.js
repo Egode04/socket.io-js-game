@@ -30,15 +30,19 @@ function succeded(form, color = '#14b8a6') {
     form.labels.pass.style.color = color
     // background
     form.button.style.backgroundColor = color
+    // text
+    header.innerText = 'Sign Up - Succeded'
 }
 
 sign.button.addEventListener('click', () => {
-    if (signUser(submit(sign), users)) {
-        console.log('Signed Up...')
-        header.innerText = 'Sign Up - Succeded'
-        succeded(sign)
-    } else {
-        console.log('Failed...')
-        failed(sign)
-    }
+    socket.emit('signup', submit(sign))
+    
+    // if (signUser(submit(sign), users)) {
+    //     console.log('Signed Up...')
+    //     header.innerText = 'Sign Up - Succeded'
+    //     succeded(sign)
+    // } else {
+    //     console.log('Failed...')
+    //     failed(sign)
+    // }
 })
