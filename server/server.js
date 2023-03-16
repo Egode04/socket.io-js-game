@@ -65,22 +65,18 @@ async function insertUser(user) {
     if (user.username && user.password) {
         const users = await selectUsers()
         for (let obj of users) {
-            if (obj.username === user.username) {
-                // console.log('username taken...')
+            if (obj.username.toLowerCase() === user.username.toLowerCase()) {
                 return { bool: false, msg: 'username taken...' }
             }
         }
         let sql = `INSERT INTO users SET ?`
         data.db.query(sql, user, err => {
-            if (err) throw err
-            // console.log('succeded...')
+            console.error(err)
         })
         return { bool: true, msg: 'succeded...' }
     } else {
-        // console.log('empty input(s)...')
         return { bool: false, msg: 'empty input(s)...' }
     }
-    // return { bool: false, msg: 'empty input(s)...' }
 }
 
 async function selectUsers() {
@@ -457,8 +453,14 @@ io.on('connect', socket => {
         }
     })
 
+    /* To do:
+        1. Add a function to limit the amount of users on each account to 1 logged in user per account
+        2. Add a scoreboard to keep track of the players scores
+            Also add a visible scoreboard for the client
+        3. Add more clear info to why you couldnt 'login/sign up' to make it clear what you did wrong
+    */
+
     socket.on('login', async user => {
-        // console.log('login attempted...')
         const log = await login(user)
         if (log.bool) {
             console.log(log.msg)

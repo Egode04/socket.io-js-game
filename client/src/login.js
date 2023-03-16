@@ -32,7 +32,7 @@ function createUser(info) {
     return { username: info.inputs.username, password: info.inputs.password }
 }
 
-function failed(form, color = '#f87171') {
+function failed(form, header, text, color = '#f87171') {
     // border
     form.inputs.username.style.borderColor = color
     form.inputs.password.style.borderColor = color
@@ -41,6 +41,8 @@ function failed(form, color = '#f87171') {
     form.labels.pass.style.color = color
     // background
     form.button.style.backgroundColor = color
+    // text
+    header.innerText = `${text} - Failed`
 }
 
 form.button.addEventListener('click', () => {

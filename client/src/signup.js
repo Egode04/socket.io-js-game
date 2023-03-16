@@ -21,7 +21,7 @@ function signUser(user, users) {
     } return
 }
 
-function succeded(form, header, msg = 'Sign Up', color = '#14b8a6') {
+function succeded(form, header, text = 'Sign Up', color = '#14b8a6') {
     // border
     form.inputs.username.style.borderColor = color
     form.inputs.password.style.borderColor = color
@@ -31,7 +31,7 @@ function succeded(form, header, msg = 'Sign Up', color = '#14b8a6') {
     // background
     form.button.style.backgroundColor = color
     // text
-    header.innerText = `${msg} - Succeded`
+    header.innerText = `${text} - Succeded`
 }
 
 sign.button.addEventListener('click', () => {

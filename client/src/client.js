@@ -24,13 +24,13 @@ socket.on('connect', () => {
     })
 
     socket.on('signup succeded', () => {
-        succeded(sign, h2)
+        succeded(sign, h2, 'Sign Up', '#8b5cf6')
     })
 
     socket.on('signup failed', () => {
-        failed(sign)
+        failed(sign, h2, 'Sign Up')
     })
     socket.on('login failed', () => {
-        failed(form)
+        failed(form, h1, 'Login')
     })
 })
