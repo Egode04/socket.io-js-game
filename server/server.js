@@ -66,20 +66,21 @@ async function insertUser(user) {
         const users = await selectUsers()
         for (let obj of users) {
             if (obj.username === user.username) {
-                console.log('username taken...')
-                return false
+                // console.log('username taken...')
+                return { bool: false, msg: 'username taken...' }
             }
         }
         let sql = `INSERT INTO users SET ?`
         data.db.query(sql, user, err => {
             if (err) throw err
-            console.log('succeded...')
-            return true
+            // console.log('succeded...')
         })
+        return { bool: true, msg: 'succeded...' }
     } else {
-        console.log('empty input(s)...')
-        return false
+        // console.log('empty input(s)...')
+        return { bool: false, msg: 'empty input(s)...' }
     }
+    // return { bool: false, msg: 'empty input(s)...' }
 }
 
 async function selectUsers() {
@@ -100,29 +101,26 @@ async function selectUsers() {
     }
 }
 
-async function signup(user) {
-    if (user.username && user.password) {
-        const users = await selectUsers()
-        for (let obj of users) {
-            if (obj.username === user.username) {
-                return false
-            }
-        } return true
-    } return
-}
-
 async function login(user) {
     if (user.username && user.password) {
         const users = await selectUsers()
-        console.log(users)
+        // console.log(users)
         for (let obj of users) {
             if (obj.username === user.username && obj.password === user.password) {
-                console.log(obj)
-                console.log(user)
-                return true
+                // console.log(obj)
+                // console.log(user)
+                return { bool: true, msg: 'login succeeded...' }
             }
-        } return true
-    } return
+        } return { bool: false, msg: 'user does not exist...' }
+    } return { bool: undefined, msg: 'empty input(s)...' }
+}
+
+function checkUser(user, users) {
+    for (let obj of users) {
+        if (obj.username === user.username && obj.password === user.password) {
+            return true
+        } return false
+    }
 }
 
 function tick() {
@@ -343,19 +341,11 @@ function collition(object, hitbox) {
     }
 }
 
-function checkUser(user, users) {
-    for (let obj of users) {
-        if (obj.username === user.username && obj.password === user.password) {
-            return true
-        } return false
-    }
-}
-
 io.on('connect', socket => {
     // user connected
     console.log(`New client connected: ${socket.id}`)
 
-    socket.on('logged in', () => {
+    socket.on('logged in', username => {
         inputMap[socket.id] = {
             up:    false,
             down:  false,
@@ -364,6 +354,7 @@ io.on('connect', socket => {
         }
         players.push({
             id: socket.id,
+            username,
             position: newPosition({
                 x: {
                     range: 9,
@@ -393,6 +384,7 @@ io.on('connect', socket => {
             bowls: 3,
             maxBowls: 3
         })
+        console.log(players)
     })
 
     // emit commands here
@@ -435,6 +427,7 @@ io.on('connect', socket => {
             // spawn ramen
             const ramenSize = randInt(2, 0)
             ramen.push({
+                parent: p,
                 position: newPosition({
                     x: {
                         range: 20,
@@ -464,30 +457,43 @@ io.on('connect', socket => {
         }
     })
 
-    socket.on('login', user => {
+    socket.on('login', async user => {
         // console.log('login attempted...')
-        if (login(user) === true) {
-            console.log('success...')
-            // socket.emit('logged in')
+        const log = await login(user)
+        if (log.bool) {
+            console.log(log.msg)
+            socket.emit('logged in')
         } else {
-            console.log('failed...')
-            socket.emit('loggin failed')
+            console.log(log.msg)
+            socket.emit('login failed')
         }
     })
 
-    socket.on('signup', user => {
+    socket.on('signup', async user => {
         // console.log('sign up attempted...')
-        if (signup(user)) {
-            insertUser(user)
-            // console.log('sign up succeded...')
+        const insert = await insertUser(user)
+        if (insert.bool) {
+            console.log(insert.msg)
             socket.emit('signup succeded')
         } else {
-            // console.log('sign up failed...')
+            console.log(insert.msg)
             socket.emit('signup failed')
         }
     })
 
     socket.on('disconnect', () => {
+        let p
+        players.forEach(player => {
+            if (player.id === socket.id) {
+                p = player
+            }
+        })
+        ramen.forEach((ramen, index) => {
+            if (ramen.parent = p) {
+                removeIndexes.push(index)
+            }
+        })
+        removeIndexes = removeIndex(removeIndexes, ramen)
         players.splice(players.indexOf(socket.id))
     })
 })

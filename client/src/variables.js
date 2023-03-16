@@ -7,7 +7,8 @@ canvas.width = canvas.height
 const hitboxes = []
 const structures = []
 const playerImages = []
-const text = []
+const health = []
+const names = []
 
 let players = []
 let bowls = []
@@ -16,6 +17,7 @@ let ramen = []
 let background
 let playerImg
 let player
+let user
 
 const playerState = {
     up: './player/player up.png',

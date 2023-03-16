@@ -1,4 +1,5 @@
 const wrapper = document.querySelector('account')
+const h1 = document.querySelector('h1')
 let form = {
     inputs: {
         username: document.querySelector('#username'),
@@ -10,8 +11,6 @@ let form = {
         pass: document.querySelector('#pass')
     }
 }
-
-const users = [{ username: 'user', password: 'password' }]
 
 function submit(form) {
     const info = {
@@ -45,14 +44,6 @@ function failed(form, color = '#f87171') {
 }
 
 form.button.addEventListener('click', () => {
-    socket.emit('login', submit(form))
-
-    // console.log(users)
-    // if (checkUser(submit(form), users)) {
-    //     console.log('Logged in...')
-    //     wrapper.style.display = 'none'
-    // } else {
-    //     console.log('Failed...')
-    //     failed(form)
-    // }
+    user = submit(form)
+    socket.emit('login', user)
 })

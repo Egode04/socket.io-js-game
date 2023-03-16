@@ -1,4 +1,4 @@
-const header = document.querySelector('h2')
+const h2 = document.querySelector('h2')
 let sign = {
     inputs: {
         username: document.querySelector('.username'),
@@ -21,7 +21,7 @@ function signUser(user, users) {
     } return
 }
 
-function succeded(form, color = '#14b8a6') {
+function succeded(form, header, msg = 'Sign Up', color = '#14b8a6') {
     // border
     form.inputs.username.style.borderColor = color
     form.inputs.password.style.borderColor = color
@@ -31,18 +31,9 @@ function succeded(form, color = '#14b8a6') {
     // background
     form.button.style.backgroundColor = color
     // text
-    header.innerText = 'Sign Up - Succeded'
+    header.innerText = `${msg} - Succeded`
 }
 
 sign.button.addEventListener('click', () => {
     socket.emit('signup', submit(sign))
-    
-    // if (signUser(submit(sign), users)) {
-    //     console.log('Signed Up...')
-    //     header.innerText = 'Sign Up - Succeded'
-    //     succeded(sign)
-    // } else {
-    //     console.log('Failed...')
-    //     failed(sign)
-    // }
 })

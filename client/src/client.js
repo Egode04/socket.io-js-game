@@ -18,12 +18,13 @@ socket.on('connect', () => {
     })
 
     socket.on('logged in', () => {
+        succeded(form, h1, 'Login')
         init()
-        socket.emit('logged in')
+        socket.emit('logged in', user.username)
     })
 
     socket.on('signup succeded', () => {
-        succeded(sign)
+        succeded(sign, h2)
     })
 
     socket.on('signup failed', () => {

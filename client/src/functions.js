@@ -539,7 +539,7 @@ function init() {
     addHitbox(hitbox, hitboxes)
 
     // add text
-    text.push({
+    health.push({
         position: {
             x: -50,
             y: -50
@@ -547,8 +547,18 @@ function init() {
         string: '3',
         align: 'center',
         color: '#000',
-        size: calcTiles(0.5),
+        size: calcTiles(0.5)
+    })
 
+    names.push({
+        position: {
+            x: 0,
+            y: 0
+        },
+        string: user,
+        align: 'center',
+        color: '#000',
+        size: calcTiles(0.5)
     })
 
     // animate
@@ -620,14 +630,21 @@ function animate() {
     })
 
     // draw text
+    //  health
     players.forEach(player => {
-        text.forEach(text => {
-            ctx.fillStyle = text.color
-            ctx.font = `${text.size}px serif`
-            ctx.textAlign = text.align
+        health.forEach(health => {
+            ctx.fillStyle = health.color
+            ctx.font = `${health.size}px serif`
+            ctx.textAlign = health.align
             ctx.fillText(player.hp.health, player.position.x+player.dimensions.width/2, player.position.y+player.dimensions.height/1.05)
             // ctx.fillStyle = '#fff'
             // ctx.strokeText(player.hp.health)
+        })
+        names.forEach(name => {
+            ctx.fillStyle = name.color
+            ctx.font = `${name.size}px serif`
+            ctx.textAlign = name.align
+            ctx.fillText(player.username, player.position.x+player.dimensions.width/2, player.position.y)
         })
     })
 }
