@@ -4,11 +4,21 @@ const ctx = canvas.getContext('2d')
 canvas.height = 768
 canvas.width = canvas.height
 
+const para = {
+    login: document.querySelector('p1'),
+    signup: document.querySelector('p2'),
+}
+const warning = {
+    login: document.querySelector('w1'),
+    signup: document.querySelector('w2')
+}
+
 const hitboxes = []
 const structures = []
 const playerImages = []
 const health = []
 const names = []
+const tags = []
 
 let players = []
 let bowls = []

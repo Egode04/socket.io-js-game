@@ -41,8 +41,6 @@ function failed(form, header, text, color = '#f87171') {
     form.labels.pass.style.color = color
     // background
     form.button.style.backgroundColor = color
-    // text
-    header.innerText = `${text} - Failed`
 }
 
 form.button.addEventListener('click', () => {

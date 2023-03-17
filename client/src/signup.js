@@ -30,8 +30,6 @@ function succeded(form, header, text = 'Sign Up', color = '#14b8a6') {
     form.labels.pass.style.color = color
     // background
     form.button.style.backgroundColor = color
-    // text
-    header.innerText = `${text} - Succeded`
 }
 
 sign.button.addEventListener('click', () => {

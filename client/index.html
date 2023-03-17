@@ -44,14 +44,27 @@
             font-family: arial;
             font-size: 3rem;
         }
+
+        .warning {
+            color: #fda4af;
+            font-size: 0.8rem;
+        }
+        .info {
+            font-size: medium;
+        }
+        .bold {
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <account>
         <div class="login wrapper" class="row">
             <h1 class="title">Login</h1>
+            <w1 class="warning">only one user can be logged in to the same account at once</w1>
+            <p1 class="info"></p1>
+
             <form class="col s12" method="post">
-    
                 <div class="row">
                     <div class="input-field col s12">
                         <input id="username" type="text" class="validate" name="Username">
@@ -69,14 +82,15 @@
                 <a id="login" class="waves-effect waves-light btn">
                     Login
                 </a>
-    
             </form>
         </div>
     
         <div class="signup wrapper" class="row">
             <h2 class="title">Sign Up</h2>
+            <w2 class="warning">recommended not to use external passwords since your <!--I (<span class="bold">the creator of this fantastic game</span>) -->account information can be taken from the database</w2>
+            <p2 class="info"></p2>
+
             <form class="col s12" method="post">
-    
                 <div class="row">
                     <div class="input-field col s12">
                         <input class="username" type="text" class="validate" name="Username">
@@ -94,7 +108,6 @@
                 <a id="signup" class="waves-effect waves-light btn">
                     Sign Up
                 </a>
-    
             </form>
         </div>
     </account>

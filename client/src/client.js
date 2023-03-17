@@ -17,20 +17,25 @@ socket.on('connect', () => {
         ramen = serverRamen
     })
 
+    // login
     socket.on('logged in', () => {
         succeded(form, h1, 'Login')
         init()
         socket.emit('logged in', user.username)
     })
-
-    socket.on('signup succeded', () => {
-        succeded(sign, h2, 'Sign Up', '#8b5cf6')
-    })
-
-    socket.on('signup failed', () => {
-        failed(sign, h2, 'Sign Up')
-    })
-    socket.on('login failed', () => {
+    socket.on('login failed',  cause => {
         failed(form, h1, 'Login')
+        para.login.innerText = cause
+    })
+
+    // sign up    
+    socket.on('signup succeded',   text => {
+        succeded(sign, h2, 'Sign Up', '#8b5cf6')
+        para.signup.innerText    = text
+        warning.signup.innerText = null
+    })
+    socket.on('signup failed',  cause => {
+        failed(sign, h2, 'Sign Up')
+        para.signup.innerText = cause
     })
 })

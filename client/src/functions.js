@@ -29,6 +29,10 @@ function getSpeed(speed) {
     return speed / Math.sqrt(2)
 }
 
+function rgba(r, g, b, a) {
+    return { r, g, b, a }
+}
+
 function init() {
     // setup game
     wrapper.style.display = 'none'
@@ -550,11 +554,15 @@ function init() {
         size: calcTiles(0.5)
     })
 
-    names.push({
-        position: {
-            x: 0,
-            y: 0
+    tags.push({
+        dimensions: {
+            width: 50,
+            height: 10
         },
+        color: 'rgba(0, 0, 0, 1)'
+    })
+
+    names.push({
         string: user,
         align: 'center',
         color: '#000',
@@ -579,39 +587,21 @@ function animate() {
         ctx.drawImage(ramenImage, ramen.position.x, ramen.position.y, ramen.dimensions.width, ramen.dimensions.height)
     })
 
+    // player
     players.forEach(player => {
         ctx.drawImage(playerImage, player.position.x-calcTiles(0.19), player.position.y-calcTiles(0.44))
 
-        let colors = {
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 0
-        }
-
+        let colors = rgba(0, 0, 0, 0)
         if (player.hp.armor) {
-            colors = {
-                r: 50,
-                g: 100,
-                b: 255,
-                a: 0.1
-            }
+            colors = rgba(50, 100, 255, 0.1)
         }
         if (player.hp.health === 1) {
-            colors = {
-                r: 255,
-                g: 100,
-                b: 50,
-                a: 0.1
-            }
+            colors = rgba(255, 100, 50, 0.1)
         }
 
         ctx.fillStyle = `rgba(${colors.r}, ${colors.g}, ${colors.b}, ${colors.a})`
         ctx.fillRect(player.position.x, player.position.y, player.dimensions.width, player.dimensions.height)
     })
-
-    // change color of player when losing or gaining health
-    // ctx.fillRect()
 
     bowls.forEach(bowl => {
         ctx.drawImage(bowlImage, bowl.position.x-bowl.dimensions.width/2, bowl.position.y-bowl.dimensions.height/2, bowl.dimensions.width, bowl.dimensions.height)
@@ -630,16 +620,20 @@ function animate() {
     })
 
     // draw text
-    //  health
     players.forEach(player => {
+        // health
         health.forEach(health => {
             ctx.fillStyle = health.color
             ctx.font = `${health.size}px serif`
             ctx.textAlign = health.align
             ctx.fillText(player.hp.health, player.position.x+player.dimensions.width/2, player.position.y+player.dimensions.height/1.05)
-            // ctx.fillStyle = '#fff'
-            // ctx.strokeText(player.hp.health)
         })
+        // name tag
+        tags.forEach(tag => {
+            ctx.fillStyle = tag.color
+            ctx.fillRect(player.position.x-tag.dimensions.width*user.length, player.position.y, tag.dimensions.width*user.length, tag.dimensions.height)
+        })
+        // username
         names.forEach(name => {
             ctx.fillStyle = name.color
             ctx.font = `${name.size}px serif`

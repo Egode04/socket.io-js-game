@@ -45,6 +45,8 @@ const canvas = {
     height: 768
 }
 
+const usersOnline = []
+
 const players = []
 const inputMap = {}
 
@@ -66,16 +68,16 @@ async function insertUser(user) {
         const users = await selectUsers()
         for (let obj of users) {
             if (obj.username.toLowerCase() === user.username.toLowerCase()) {
-                return { bool: false, msg: 'username taken...' }
+                return { bool: false, msg: 'username taken' }
             }
         }
         let sql = `INSERT INTO users SET ?`
         data.db.query(sql, user, err => {
             console.error(err)
         })
-        return { bool: true, msg: 'succeded...' }
+        return { bool: true, msg: 'account created' }
     } else {
-        return { bool: false, msg: 'empty input(s)...' }
+        return { bool: false, msg: 'empty inputs' }
     }
 }
 
@@ -93,36 +95,24 @@ async function selectUsers() {
         
         return array
     } catch (error) {
-        throw error
+        console.error(error)
     }
 }
 
 async function login(user) {
     if (user.username && user.password) {
         const users = await selectUsers()
-        // console.log(users)
         for (let obj of users) {
             if (obj.username === user.username && obj.password === user.password) {
-                // console.log(obj)
-                // console.log(user)
-                return { bool: true, msg: 'login succeeded...' }
+                return { bool: true, msg: 'login succeeded' }
             }
-        } return { bool: false, msg: 'user does not exist...' }
-    } return { bool: undefined, msg: 'empty input(s)...' }
-}
-
-function checkUser(user, users) {
-    for (let obj of users) {
-        if (obj.username === user.username && obj.password === user.password) {
-            return true
-        } return false
-    }
+        } return { bool: false, msg: 'user does not exist' }
+    } return { bool: undefined, msg: 'empty inputs' }
 }
 
 function tick() {
     players.forEach(player => {
         const inputs = inputMap[player.id]
-        // console.log(inputMap)
 
         // set [horizontal/vertical] velocity
         if (inputs.up) {
@@ -308,8 +298,8 @@ function resetPlayer(player) {
 
 function newPosition(obj) {
     return {
-        x: calcTiles(Math.floor(Math.random() * (obj.x.range-obj.x.offset) + obj.x.offset)),
-        y: calcTiles(Math.floor(Math.random() * (obj.x.range-obj.x.offset) + obj.x.offset))
+        x: calcTiles(Math.floor(Math.random() * obj.x.range + obj.x.offset)),
+        y: calcTiles(Math.floor(Math.random() * obj.x.range + obj.x.offset))
     }
 }
 
@@ -380,15 +370,12 @@ io.on('connect', socket => {
             bowls: 3,
             maxBowls: 3
         })
-        console.log(players)
     })
 
     // emit commands here
     socket.on('pressed', keys => {
         inputMap[socket.id] = keys
     })
-
-    socket.on('players', (players, images) => console.log(players, `images: ${images}`))
 
     socket.on('hitboxes', hb => {
         hitboxes = hb
@@ -456,30 +443,26 @@ io.on('connect', socket => {
     /* To do:
         1. Add a function to limit the amount of users on each account to 1 logged in user per account
         2. Add a scoreboard to keep track of the players scores
-            Also add a visible scoreboard for the client
-        3. Add more clear info to why you couldnt 'login/sign up' to make it clear what you did wrong
+            Also add a visible scoreboard on client side
     */
 
     socket.on('login', async user => {
         const log = await login(user)
         if (log.bool) {
-            console.log(log.msg)
-            socket.emit('logged in')
+            socket.emit('logged in', log.msg)
+            usersOnline[socket.id] = user
+            console.log(usersOnline)
         } else {
-            console.log(log.msg)
-            socket.emit('login failed')
+            socket.emit('login failed', log.msg)
         }
     })
 
     socket.on('signup', async user => {
-        // console.log('sign up attempted...')
         const insert = await insertUser(user)
         if (insert.bool) {
-            console.log(insert.msg)
-            socket.emit('signup succeded')
+            socket.emit('signup succeded', insert.msg)
         } else {
-            console.log(insert.msg)
-            socket.emit('signup failed')
+            socket.emit('signup failed', insert.msg)
         }
     })
 
@@ -496,6 +479,7 @@ io.on('connect', socket => {
             }
         })
         removeIndexes = removeIndex(removeIndexes, ramen)
+        usersOnline[socket.id] = undefined
         players.splice(players.indexOf(socket.id))
     })
 })
