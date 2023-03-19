@@ -45,8 +45,6 @@ const canvas = {
     height: 768
 }
 
-const usersOnline = []
-
 const players = []
 const inputMap = {}
 
@@ -59,8 +57,6 @@ const physics = {
 }
 
 let removeIndexes = []
-
-let once = true
 
 // functions
 async function insertUser(user) {
@@ -441,8 +437,7 @@ io.on('connect', socket => {
     })
 
     /* To do:
-        1. Add a function to limit the amount of users on each account to 1 logged in user per account
-        2. Add a scoreboard to keep track of the players scores
+        1. Add a scoreboard to keep track of the players scores
             Also add a visible scoreboard on client side
     */
 
@@ -450,8 +445,6 @@ io.on('connect', socket => {
         const log = await login(user)
         if (log.bool) {
             socket.emit('logged in', log.msg)
-            usersOnline[socket.id] = user
-            console.log(usersOnline)
         } else {
             socket.emit('login failed', log.msg)
         }
@@ -479,7 +472,6 @@ io.on('connect', socket => {
             }
         })
         removeIndexes = removeIndex(removeIndexes, ramen)
-        usersOnline[socket.id] = undefined
         players.splice(players.indexOf(socket.id))
     })
 })

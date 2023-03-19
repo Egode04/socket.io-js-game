@@ -1,4 +1,4 @@
-const canvas = document.querySelector('#game')
+const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
 canvas.height = 768
@@ -11,6 +11,12 @@ const para = {
 const warning = {
     login: document.querySelector('w1'),
     signup: document.querySelector('w2')
+}
+
+const scoreboard = {
+    wrapper: document.querySelector('scoreboard'),
+    leaderboard: document.querySelector('#scoreboard'),
+    // button: document.querySelector('toggle')
 }
 
 const hitboxes = []
@@ -28,6 +34,7 @@ let background
 let playerImg
 let player
 let user
+let gamestarted = false
 
 const playerState = {
     up: './player/player up.png',

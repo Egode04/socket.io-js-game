@@ -57,3 +57,19 @@ addEventListener('click', event => {
         socket.emit('bowl', angle)
     }
 })
+
+addEventListener('keydown', event => {
+    if (gamestarted) {
+        if (event.key === 'q') {
+            scoreboard.leaderboard.style.display = 'block'
+        }
+    }
+})
+
+addEventListener('keyup', event => {
+    if (gamestarted) {
+        if (event.key === 'q') {
+            scoreboard.leaderboard.style.display = 'none'
+        }
+    }
+})

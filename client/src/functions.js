@@ -569,6 +569,8 @@ function init() {
         size: calcTiles(0.5)
     })
 
+    gamestarted = true
+
     // animate
     animate()
 }
