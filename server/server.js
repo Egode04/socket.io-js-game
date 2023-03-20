@@ -22,11 +22,19 @@ const conn = {
     password : 'password',
     database : 'node_mysql'
 }
+const score = {
+    host     : 'localhost',
+    user     : 'root',
+    password : 'password',
+    database : 'scoreboard'
+}
 
 // create connection
 const data = {
     db: SQL.mysql.createConnection(conn),
-    await: SQL.await.createConnection(conn)
+    await: SQL.await.createConnection(conn),
+    score: SQL.mysql.createConnection(score),
+    awaitScore: SQL.await.createConnection(score)
 }
 
 // connect
@@ -34,6 +42,12 @@ data.db.connect(err => {
     if (err) throw err
 })
 data.await.connect(err => {
+    if (err) throw err
+})
+data.score.connect(err => {
+    if (err) throw err
+})
+data.awaitScore.connect(err => {
     if (err) throw err
 })
 
@@ -52,6 +66,9 @@ let hitboxes = []
 const bowls = []
 const ramen = []
 
+// top 5 players only
+const leaderboard = []
+
 const physics = {
     speed: 8
 }
@@ -59,6 +76,52 @@ const physics = {
 let removeIndexes = []
 
 // functions
+async function addScore(user) {
+    if (user.username && user.password) {
+        const scoreboard = await getScoreboard()
+        for (let obj of scoreboard) {
+            if (obj.name.toLowerCase() === user.username.toLowerCase()) {
+                return { bool: false, msg: 'score already exist' }
+            }
+        }
+        const sql = `INSERT INTO leaderboard SET ?`
+        const score = {
+            name: user.username,
+            kills: 0,
+            deaths: 0,
+            damage: 0
+        }
+        data.score.query(sql, score, err => {
+            console.error(err)
+        })
+        return { bool: true, msg: 'score added' }
+    } else {
+        return { bool: false, msg: 'empty inputs' }
+    }
+}
+
+async function getScoreboard() {
+    let array = []
+    let sql = `SELECT * FROM leaderboard`
+
+    try {
+        let results = await data.awaitScore.awaitQuery(sql)
+
+        for (let result of results) {
+            const res = results[results.indexOf(result)]
+            array.push({ name: res.name, kills: res.kills, deaths: res.deaths, damage: res.damage })
+        }
+
+        return array
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+async function createLeaderboard(scoreboard) {
+    return scoreboard
+}
+
 async function insertUser(user) {
     if (user.username && user.password) {
         const users = await selectUsers()
@@ -84,8 +147,8 @@ async function selectUsers() {
     try {
         let results = await data.await.awaitQuery(sql)
 
-        for (i of results) {
-            res = results[results.indexOf(i)]
+        for (let result of results) {
+            const res = results[results.indexOf(result)]
             array.push({ id: res.id, username: res.username, password: res.password })
         }
         
@@ -295,7 +358,7 @@ function resetPlayer(player) {
 function newPosition(obj) {
     return {
         x: calcTiles(Math.floor(Math.random() * obj.x.range + obj.x.offset)),
-        y: calcTiles(Math.floor(Math.random() * obj.x.range + obj.x.offset))
+        y: calcTiles(Math.floor(Math.random() * obj.y.range + obj.y.offset))
     }
 }
 
@@ -447,6 +510,13 @@ io.on('connect', socket => {
             socket.emit('logged in', log.msg)
         } else {
             socket.emit('login failed', log.msg)
+        }
+        const add = await addScore(user)
+        if (add.bool) {
+            const lead = createLeaderboard(await getScoreboard())
+            console.log(lead)
+        } else {
+            console.log(add.msg)
         }
     })
 

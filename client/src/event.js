@@ -45,11 +45,6 @@ addEventListener('click', event => {
                 p = player
             }
         })
-        const unusedSpace = {
-            x: innerWidth/2 - canvas.width,
-            y: innerHeight/2 - canvas.height
-        }
-        // console.log(p)
         const angle = Math.atan2(
             event.clientY - p.position.y - p.dimensions.height / 2,
             event.clientX - p.position.x - p.dimensions.width / 2
