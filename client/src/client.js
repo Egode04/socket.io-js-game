@@ -38,4 +38,9 @@ socket.on('connect', () => {
         failed(sign, h2, 'Sign Up')
         para.signup.innerText = cause
     })
+
+    // scoreboard
+    socket.on('scoreboard', el => {
+        updateScoreboard(el)
+    })
 })

@@ -33,6 +33,23 @@ function rgba(r, g, b, a) {
     return { r, g, b, a }
 }
 
+function updateScoreboard(el) {
+    const uls = {}
+    for (let key in el) {
+        uls[key] = document.querySelector(`#${key}-list`)
+        uls[key].innerHTML = `<li id="${key}">${capitalizeFirstLetter(key)}</li>`
+        // el[key].forEach(item => {
+        //     uls[key].innerHTML += `<li>${item}</li>`
+        // })
+
+        uls[key].innerHTML += el[key].map(item => `<li>${item}</li>`).join('')
+    }
+}
+
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function init() {
     // setup game
     wrapper.style.display = 'none'

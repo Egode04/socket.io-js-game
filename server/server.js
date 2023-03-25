@@ -118,8 +118,34 @@ async function getScoreboard() {
     }
 }
 
-async function createLeaderboard(scoreboard) {
-    return scoreboard
+async function addValue(player, value) {
+    const sql = `UPDATE leaderboard SET ${value} = ${value} + 1 WHERE name = '${player.username}'`
+    await data.awaitScore.awaitQuery(sql, err => {
+        if (err) console.error(err)
+    })
+}
+
+async function updateScoreboard() {
+    const scoreboard = await getScoreboard()
+    const sorted = scoreboard.sort((a, b) => b.kills - a.kills)
+    return createLeaderboard(sorted)
+}
+
+async function createLeaderboard(array) {
+    const el = {
+        name: [],
+        kills: [],
+        deaths: [],
+        damage: []
+    }
+    array.forEach(item => {
+        for (let key in el) {
+            if (el[key].length < 5) {
+                el[key].push(item[key])
+            }
+        }
+    })
+    return el
 }
 
 async function insertUser(user) {
@@ -169,7 +195,7 @@ async function login(user) {
     } return { bool: undefined, msg: 'empty inputs' }
 }
 
-function tick() {
+async function tick() {
     players.forEach(player => {
         const inputs = inputMap[player.id]
 
@@ -261,9 +287,10 @@ function tick() {
             }
         })
     })
-
     removeIndexes = removeIndex(removeIndexes, bowls)
 
+    const parents = []
+    const damages = []
     players.forEach((player) => {
         bowls.forEach((bowl, index) => {
             if (player.id !== bowl.parent.id) {
@@ -274,15 +301,39 @@ function tick() {
                         player.hp.armor -= 1
                     } else if (player.hp.health) {
                         player.hp.health -= 1
+                        damages.push(bowl.parent)
                     } if (!player.hp.health) {
+                        addValue(player, 'deaths')
+                        parents.push(bowl.parent)
                         resetPlayer(player)
                     }
                 }
             }
+            
+        })
+        
+    })
+    removeIndexes = removeIndex(removeIndexes, bowls)
+
+    players.forEach(player => {
+        damages.forEach((parent, index) => {
+            if (parent === player) {
+                addValue(player, 'damage')
+                removeIndexes.push(index)
+            }
         })
     })
+    removeIndexes = removeIndex(removeIndexes, damages)
 
-    removeIndexes = removeIndex(removeIndexes, bowls)
+    players.forEach(player => {
+        parents.forEach((parent, index) => {
+            if (parent === player) {
+                addValue(player, 'kills')
+                removeIndexes.push(index)
+            }
+        })
+    })
+    removeIndexes = removeIndex(removeIndexes, parents)
 
     players.forEach(player => {
         ramen.forEach((ramen, index) => {
@@ -290,16 +341,17 @@ function tick() {
                 if (collition(player, ramen)) {
                     removeIndexes.push(index)
                     
+                    let heal = ramen.effect.healing
                     player.bowls += ramen.effect.bowls
-                    player.hp.health += ramen.effect.healing
+                    player.hp.health += heal
                     if (player.hp.health > player.hp.maxHealth) {
                         player.hp.health = player.hp.maxHealth
                     }
                 }
             }
         })
+        
     })
-
     removeIndexes = removeIndex(removeIndexes, ramen)
 
     // move ramen if inside of hitbox
@@ -323,6 +375,7 @@ function tick() {
     io.emit('players', players)
     io.emit('bowls', bowls)
     io.emit('ramen', ramen)
+    io.emit('scoreboard', await updateScoreboard())
 }
 
 function setSpeed({maxSpeed, bowls, maxBowls, speed = 4}) {

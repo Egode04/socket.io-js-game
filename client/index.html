@@ -14,8 +14,6 @@
 
             --width: 768px;
 
-            --height: 100%;
-
             --rank: rgb(255, 195, 92);
             --name: rgb(138, 255, 138);
             --kills: rgb(255, 173, 125);
@@ -77,31 +75,26 @@
             width: var(--width);
             height: var(--width);
             pointer-events: none;
-            /* background: rgba(0, 150, 255, 0.3); */
         }
         #scoreboard {
             display: none;
             position: relative;
             width: 20rem;
-            /* height: 10rem; */
             margin-top: 1rem;
             margin-left: 1rem;
             padding: 0.25rem;
-            /* background: rgba(255, 0, 150, 0.3); */
             background: #10101080;
         }
         .bar {
             position: inherit;
-            /* border: #231f20 solid 1px; */
         }
         #bar {
-            height: var(--height);
+            height: 100%;
         }
         li {
             display: inline;
             margin: 0.1rem;
             color: aliceblue;
-            /* border: #231f20 solid 1px; */
         }
 
         .bar ul {
@@ -216,37 +209,17 @@
                     <li>4</li>
                     <li>5</li>
                 </ul>
-                <ul class="column ml-1">
+                <ul id="name-list" class="column ml-1">
                     <li id="name">Name</li>
-                    <li>moderator</li>
-                    <li>admin</li>
-                    <li>dev</li>
-                    <li>Nachos</li>
-                    <li>Egode</li>
                 </ul>
-                <ul class="column right ml-1">
+                <ul id="damage-list" class="column right ml-1">
                     <li id="damage">Dmg</li>
-                    <li>32</li>
-                    <li>27</li>
-                    <li>19</li>
-                    <li>16</li>
-                    <li>14</li>
                 </ul>
-                <ul class="column right ml-1">
+                <ul id="deaths-list" class="column right ml-1">
                     <li id="deaths">Deaths</li>
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                    <li>5</li>
                 </ul>
-                <ul class="column right ml-1">
+                <ul id="kills-list" class="column right ml-1">
                     <li id="kills">Kills</li>
-                    <li>8</li>
-                    <li>7</li>
-                    <li>3</li>
-                    <li>3</li>
-                    <li>1</li>
                 </ul>
             </ul>
         </div>

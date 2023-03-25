@@ -55,7 +55,7 @@ addEventListener('click', event => {
 
 addEventListener('keydown', event => {
     if (gamestarted) {
-        if (event.key === 'q') {
+        if (event.key === 'Shift') {
             scoreboard.leaderboard.style.display = 'block'
         }
     }
@@ -63,7 +63,7 @@ addEventListener('keydown', event => {
 
 addEventListener('keyup', event => {
     if (gamestarted) {
-        if (event.key === 'q') {
+        if (event.key === 'Shift') {
             scoreboard.leaderboard.style.display = 'none'
         }
     }
