@@ -21,7 +21,7 @@ function signUser(user, users) {
     } return
 }
 
-function succeded(form, header, text = 'Sign Up', color = '#14b8a6') {
+function succeded(form, color = '#14b8a6') {
     // border
     form.inputs.username.style.borderColor = color
     form.inputs.password.style.borderColor = color

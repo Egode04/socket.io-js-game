@@ -25,10 +25,6 @@ function addHitbox(info, array) {
     })
 }
 
-function getSpeed(speed) {
-    return speed / Math.sqrt(2)
-}
-
 function rgba(r, g, b, a) {
     return { r, g, b, a }
 }
@@ -38,10 +34,6 @@ function updateScoreboard(el) {
     for (let key in el) {
         uls[key] = document.querySelector(`#${key}-list`)
         uls[key].innerHTML = `<li id="${key}">${capitalizeFirstLetter(key)}</li>`
-        // el[key].forEach(item => {
-        //     uls[key].innerHTML += `<li>${item}</li>`
-        // })
-
         uls[key].innerHTML += el[key].map(item => `<li>${item}</li>`).join('')
     }
 }
@@ -588,12 +580,10 @@ function init() {
 
     gamestarted = true
 
-    // animate
     animate()
 }
 
 function animate() {
-    // if logged in => start game || let gameInProgress = true
     requestAnimationFrame(animate)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -606,7 +596,6 @@ function animate() {
         ctx.drawImage(ramenImage, ramen.position.x, ramen.position.y, ramen.dimensions.width, ramen.dimensions.height)
     })
 
-    // player
     players.forEach(player => {
         ctx.drawImage(playerImage, player.position.x-calcTiles(0.19), player.position.y-calcTiles(0.44))
 
@@ -625,8 +614,6 @@ function animate() {
     bowls.forEach(bowl => {
         ctx.drawImage(bowlImage, bowl.position.x-bowl.dimensions.width/2, bowl.position.y-bowl.dimensions.height/2, bowl.dimensions.width, bowl.dimensions.height)
     })
-
-    // console.log(bowls)
     
     structures.forEach(structure => {
         const structureImage = new Image()

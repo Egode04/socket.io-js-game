@@ -6,7 +6,7 @@ canvas.width = canvas.height
 
 const para = {
     login: document.querySelector('p1'),
-    signup: document.querySelector('p2'),
+    signup: document.querySelector('p2')
 }
 const warning = {
     login: document.querySelector('w1'),
@@ -15,8 +15,7 @@ const warning = {
 
 const scoreboard = {
     wrapper: document.querySelector('scoreboard'),
-    leaderboard: document.querySelector('#scoreboard'),
-    // button: document.querySelector('toggle')
+    leaderboard: document.querySelector('#scoreboard')
 }
 
 const hitboxes = []
