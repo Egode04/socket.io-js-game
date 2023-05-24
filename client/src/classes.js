@@ -71,15 +71,11 @@ class Player {
     constructor({
         dimensions,
         position,
-        velocity,
-        physics,
         color
     }) {
         this.dimensions = dimensions
         this.position = position
-        this.velocity = velocity
         this.color = color
-        this.physics = physics
     }
 
     draw() {
